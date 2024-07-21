@@ -15,4 +15,13 @@ class Fwman {
     });
     return result;
   }
+
+  static Future<int?> check({
+    required String name,
+  }) async {
+    final result = await methodChannel.invokeMethod<int>('check', {
+      'name': name,
+    });
+    return result;
+  }
 }
