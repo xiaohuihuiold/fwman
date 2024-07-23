@@ -26,17 +26,19 @@ class FirewallPage extends StatefulWidget {
 class _FirewallPageState extends State<FirewallPage> {
   static const appid = 'com.example.app';
 
-  Future<void> _request() async {
-    final result = await Fwman.request(name: appid, description: '防火墙请求示例');
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(result == Fwman.success ? '添加成功' : '添加失败'),
-    ));
-  }
-
   Future<void> _check() async {
-    final result = await Fwman.check(name: appid);
+    final result =
+        await Fwman.checkAndRequest(name: appid, description: '测试添加防火墙');
+    String message = switch (result.code) {
+      0 => '错误',
+      1 => '已添加到防火墙',
+      2 => '用户取消',
+      3 => '检查到防火墙问题并尝试修复',
+      int() => '',
+    };
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(result == Fwman.success ? '已添加' : '未添加'),
+      content:
+          Text(result.code == 0 ? '$message:${result.errorCode}' : message),
     ));
   }
 
@@ -51,14 +53,8 @@ class _FirewallPageState extends State<FirewallPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton.icon(
-              onPressed: _request,
-              icon: const Icon(Icons.security),
-              label: const Text('REQUEST'),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
               onPressed: _check,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(Icons.security),
               label: const Text('CHECK'),
             ),
           ],

@@ -5,26 +5,26 @@
 #include <flutter/plugin_registrar_windows.h>
 
 #include <memory>
+#include "fwman.g.h"
 
 namespace fwman {
+    static const int error = 0;
+    static const int added = 1;
+    static const int canceled = 2;
+    static const int fixed = 3;
 
-class FwmanPlugin : public flutter::Plugin {
- public:
-  static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
+    class FwmanPlugin : public flutter::Plugin, public FwmanApi {
+    public:
+        static void RegisterWithRegistrar(flutter::PluginRegistrarWindows *registrar);
 
-  FwmanPlugin();
+        FwmanPlugin();
 
-  virtual ~FwmanPlugin();
+        virtual ~FwmanPlugin();
 
-  // Disallow copy and assign.
-  FwmanPlugin(const FwmanPlugin&) = delete;
-  FwmanPlugin& operator=(const FwmanPlugin&) = delete;
-
-  // Called when a method is called on this plugin's channel from Dart.
-  void HandleMethodCall(
-      const flutter::MethodCall<flutter::EncodableValue> &method_call,
-      std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result);
-};
+        ErrorOr<FwmanResult> CheckAndRequest(
+                const std::string &name,
+                const std::string &description) override;
+    };
 
 }  // namespace fwman
 

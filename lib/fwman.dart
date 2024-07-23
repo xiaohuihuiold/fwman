@@ -1,27 +1,18 @@
 import 'package:flutter/services.dart';
+import 'package:fwman/src/fwman.g.dart';
 
 class Fwman {
-  static const methodChannel = MethodChannel('fwman');
+  static const error = 0;
+  static const added = 1;
+  static const canceled = 2;
+  static const fixed = 3;
 
-  static const success = 0;
+  static final _api = FwmanApi();
 
-  static Future<int?> request({
+  static Future<FwmanResult> checkAndRequest({
     required String name,
     required String description,
   }) async {
-    final result = await methodChannel.invokeMethod<int>('request', {
-      'name': name,
-      'description': description,
-    });
-    return result;
-  }
-
-  static Future<int?> check({
-    required String name,
-  }) async {
-    final result = await methodChannel.invokeMethod<int>('check', {
-      'name': name,
-    });
-    return result;
+    return await _api.checkAndRequest(name, description);
   }
 }
